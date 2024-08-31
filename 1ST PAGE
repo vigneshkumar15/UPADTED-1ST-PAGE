@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narcotics Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px; /* Adds space between each form */
+        }
+        .submit-btn {
+            display: none; /* Initially hide the submit button */
+        }
+        .urn-input {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between input and example */
+        }
+        .urn-example {
+            font-size: 0.9em;
+            color: #888; /* Light gray color for the example text */
+        }
+    </style>
+</head>
+<body>
+    <div class="login">
+        <h1>Narcotics Tracker</h1>
+        <center>
+            <div class="urn">
+                <h3>URN ID</h3>
+                <form id="urnForm" onsubmit="return validateURNForm();">
+                    <div class="urn-input">
+                        <input type="text" id="urnid" placeholder="Enter URN ID" required>
+                        <span class="urn-example">(e.g., URN-2024-CHEM-1234)</span> <!-- Example format placed next to input -->
+                    </div>
+
+                    <h3>DETAILS: ARE YOU A</h3>
+                    <div class="form-container">
+                        <label><input type="checkbox" name="details" value="manufacture"> Manufacture</label>
+                        <label><input type="checkbox" name="details" value="possession"> Possession</label>
+                        <label><input type="checkbox" name="details" value="storage"> Storage</label>
+                        <label><input type="checkbox" name="details" value="sale"> Sale</label>
+                        <label><input type="checkbox" name="details" value="purchase"> Purchase</label>
+                        <label><input type="checkbox" name="details" value="distribution"> Distribution</label>
+                        <label><input type="checkbox" name="details" value="export"> Export</label>
+                        <label><input type="checkbox" name="details" value="consumption"> Consumption</label>
+                    </div>
+
+                    <!-- Submit button is initially hidden and will appear after checkbox selection -->
+                    <button class="submit-btn" type="button" onclick="handleFormSubmit()">Submit</button>
+                </form>
+            </div>
+        </center>
+    </div>
+
+    <script>
+        // Function to validate the URN format
+        function validateURN(urn) {
+            // Regular expression pattern for URN format: URN-YYYY-CHEM-NNNN
+            const urnPattern = /^URN-\d{4}-CHEM-\d{4}$/;
+            return urnPattern.test(urn);
+        }
+
+        // Function to handle URN form submission
+        function validateURNForm() {
+            // Get the URN input value
+            const urnId = document.getElementById('urnid').value;
+            
+            // Validate the URN format
+            if (!validateURN(urnId)) {
+                alert('Invalid URN format. Please enter a URN in the format: URN-YYYY-CHEM-NNNN (e.g., URN-2024-CHEM-1234).');
+                return false; // Prevent form submission
+            }
+
+            // Ensure at least one checkbox is selected
+            const selectedCheckboxes = document.querySelectorAll('input[name="details"]:checked');
+            if (selectedCheckboxes.length === 0) {
+                alert('Please select at least one detail option.');
+                return false;
+            }
+
+            return true; // Allow form submission
+        }
+
+        // Function to handle the display of the submit button based on checkbox selection
+        function toggleSubmitButton() {
+            const selectedCheckboxes = document.querySelectorAll('input[name="details"]:checked');
+            const submitButton = document.querySelector('.submit-btn');
+            // Show the submit button if at least one checkbox is selected
+            if (selectedCheckboxes.length > 0) {
+                submitButton.style.display = 'block';
+            } else {
+                submitButton.style.display = 'none';
+            }
+        }
+
+        // Function to handle submit button click
+        function handleFormSubmit() {
+            // Validate URN form first
+            if (!validateURNForm()) return;
+
+            // Collect selected checkboxes
+            const selectedCheckboxes = document.querySelectorAll('input[name="details"]:checked');
+
+            // Open new pages based on selected checkboxes
+            selectedCheckboxes.forEach(checkbox => {
+                const value = checkbox.value;
+                window.open(`form_${value}.html`, '_blank'); // Opens a new form page for each selected checkbox
+            });
+        }
+
+        // Add event listeners to all checkboxes to toggle submit button display
+        document.querySelectorAll('input[name="details"]').forEach(checkbox => {
+            checkbox.addEventListener('change', toggleSubmitButton);
+        });
+    </script>
+</body>
+</html>
